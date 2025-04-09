@@ -1,0 +1,23 @@
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+/shelf/
+/.idea/workspace.xml
+
+# === Editor-based HTTP Client ===
+/httpRequests/
+
+# === Datasource local storage ===
+/dataSources/
+/dataSources.local.xml
+
+# === Java + Maven ===
+/target/
+*.log
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === Environment Files (optional, future proofing) ===
+.env
