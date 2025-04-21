@@ -80,7 +80,7 @@ This document outlines the MVP scope, user stories, backend flow, and data model
 | `spring-boot-starter-test` | Includes JUnit, Mockito, and Spring Test tools | Used for writing and running unit/integration tests |
 
 
-## Entity: User
+## User Entity - Attribute List
 - userId
 - firstname
 - lastname
@@ -175,3 +175,42 @@ If valid, the backend will extract claims from the token payload, including:
 - `role` (for role-based access down the line)
 
 If the token is invalid, malformed, or expired, the backend will reject the request and return a `401 Unauthorized` status code. This validation will happen on every protected request.
+
+## Known Gaps / To-Explore
+
+- **Email Verification Flow**
+  - Future onboarding logic to delay DB write until email is confirmed
+  - Temporary user state or JWT with expiry required
+  - Explore how to handle re-attempted registrations after expiry
+
+- **User Entity: createdAt / updatedAt Timestamps**
+  - May require base entity or auditing strategy
+  - Explore use of `@CreatedDate` / `@LastModifiedDate` with Spring JPA
+
+- **Password Reset Flow**
+  - Consider secure token-based reset mechanism (no password via email)
+  - Design needed for expired/invalid reset token handling
+
+- **Role-Based Access Control (RBAC)**
+  - Role claim already mentioned in JWT design
+  - Requires `role` attribute in User entity and downstream authorization logic
+
+- **Validation Layer Refactor**
+  - Move format and business rule validation into dedicated `Validator` classes
+  - DTO will remain passive (transport only)
+
+- **Case Sensitivity Handling**
+  - Email normalization discussed (to lowercase)
+  - Consider where to enforce normalization (DTO vs. Service)
+
+- **Field-Level Encryption (Future-Sensitive Fields)**
+  - For attributes like phone number, explore encrypted-at-rest strategies
+
+- **Security Headers / CORS**
+  - Will need to consider how frontend will access protected routes
+  - Should align with Spring Security configuration (headers, CSRF, etc.)
+
+- **API Rate Limiting / Abuse Protection**
+  - Prevent brute-force login or token request abuse
+  - May require Spring filter or gateway-level handling
+
