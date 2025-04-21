@@ -58,6 +58,15 @@ This document outlines the MVP scope, user stories, backend flow, and data model
 - This will enforce Single Responsibility Principle (SRP), improve testability, and decouple validation logic from data transport objects.
 - Validators will encapsulate all business rules (e.g., password strength, domain-specific checks) and may eventually handle i18n or advanced error formatting.
 
+## Validation Strategy – Layered Breakdown
+| Field           | Validated Where?         | Reasoning |
+|----------------|--------------------------|-----------|
+| email          | DTO + Service + Database | `@Email` annotation is applied at the DTO level to validate format. The service layer ensures uniqueness before persistence. A unique constraint is enforced in the database to prevent race conditions. Email is normalized to lowercase in the service layer to avoid casing conflicts. |
+| firstname      | DTO (MVP) → Validator (Future) | Format validation (length and character type) is enforced in the DTO using `@Size` and `@Pattern`. In the future, validation logic will be moved into a dedicated request validator to better support SRP and testability. |
+| lastname       | DTO (MVP) → Validator (Future) | Mirrors the firstname validation logic. Same strategy and constraints apply. |
+| hashedPassword | DTO + Service            | Minimum length is validated in the DTO. Password strength (uppercase, symbol, etc.) is enforced in the service layer as part of business logic. Password complexity requirements may evolve and move into a validator class post-MVP. |
+
+
 ## Spring Boot Module Selection
 | Module | Purpose | Reason for Inclusion |
 |--------|---------|----------------------|
@@ -72,11 +81,11 @@ This document outlines the MVP scope, user stories, backend flow, and data model
 
 
 ## Entity: User
-- userId: UUID autogen, primary key
-- firstname: String[50], not nullable
-- lastname: String[50], not nullable
-- email: String[x], not nullable, unique
-- hashedPassword: String[x], not nullable
+- userId
+- firstname
+- lastname
+- email
+- hashedPassword
 
 ### Future Enhancements
 - User Entity
